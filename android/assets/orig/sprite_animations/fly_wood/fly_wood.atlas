@@ -1,0 +1,34 @@
+
+fly_wood.png
+size: 512,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+fly_wood0001
+  rotate: false
+  xy: 2, 336
+  size: 248, 81
+  orig: 248, 81
+  offset: 0, 0
+  index: -1
+fly_wood0002
+  rotate: false
+  xy: 2, 419
+  size: 248, 81
+  orig: 248, 81
+  offset: 0, 0
+  index: -1
+fly_wood0003
+  rotate: false
+  xy: 2, 253
+  size: 248, 81
+  orig: 248, 81
+  offset: 0, 0
+  index: -1
+fly_wood0004
+  rotate: false
+  xy: 252, 419
+  size: 248, 81
+  orig: 248, 81
+  offset: 0, 0
+  index: -1

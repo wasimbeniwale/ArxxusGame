@@ -1,0 +1,239 @@
+package com.wasim.arxxusgame.levels;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.uwsoft.editor.renderer.Overlap2DStage;
+import com.uwsoft.editor.renderer.actor.CompositeItem;
+import com.uwsoft.editor.renderer.actor.ImageItem;
+import com.uwsoft.editor.renderer.actor.SpriteAnimation;
+import com.wasim.arxxusgame.ArxxusGame;
+import com.wasim.arxxusgame.controller.PlayerCollisionHandler;
+import com.wasim.arxxusgame.controller.PlayerController;
+import com.wasim.arxxusgame.global.Data;
+import com.wasim.arxxusgame.global.GameSoundEffects;
+import com.wasim.arxxusgame.global.Life;
+import com.wasim.arxxusgame.global.PlayerDataRenderer;
+
+public class LevelThree extends Overlap2DStage implements Screen {
+
+	ArxxusGame game;
+	ImageItem imageSaw1, imageSaw2, imageSaw3, imageHome;
+
+	// player
+	CompositeItem itemPlayer, itemBigSpike;
+	PlayerController playerController;
+	PlayerDataRenderer playerDataRenderer;
+
+	// coins,enemy,saw
+	List<SpriteAnimation> coins = new ArrayList<SpriteAnimation>();
+	List<CompositeItem> enemies = new ArrayList<CompositeItem>();
+	List<ImageItem> saws = new ArrayList<ImageItem>();
+
+	// background ambience color when player hit to spikes/enemies
+	// AmbienceColorInfo ambienceColorInfo = new AmbienceColorInfo();
+
+	public LevelThree(ArxxusGame game) {
+		this.game = game;
+	}
+
+	@Override
+	public void show() {
+		clear();
+		initSceneLoader();
+		sceneLoader.loadScene("level_three");
+		addActor(sceneLoader.getRoot());
+
+		itemPlayer = sceneLoader.sceneActor.getCompositeById("player");
+		// playerAnimation
+		playerController = new PlayerController(this);
+		itemPlayer.addScript(playerController);
+		playerDataRenderer = new PlayerDataRenderer(game);
+
+		imageSaw1 = sceneLoader.sceneActor.getImageById("saw1");
+		imageSaw2 = sceneLoader.sceneActor.getImageById("saw2");
+		imageSaw3 = sceneLoader.sceneActor.getImageById("saw3");
+		imageHome = sceneLoader.sceneActor.getImageById("home");
+
+		imageSaw1.setOrigin(0);
+		imageSaw2.setOrigin(0);
+		imageSaw3.setOrigin(0);
+
+		itemBigSpike = sceneLoader.sceneActor.getCompositeById("spike_big");
+
+		game.homeXPosition = imageHome.getX();
+		game.homeYPosition = imageHome.getY();
+
+		// coins
+		for (int i = 0; i < 40; i++) {
+			coins.add(sceneLoader.sceneActor.getSpriteAnimationById("coin"
+					+ (i + 1)));
+		}
+
+		// enemies
+		for (int i = 0; i < 9; i++) {
+			enemies.add(sceneLoader.sceneActor.getCompositeById("enemy"
+					+ (i + 1)));
+		}
+
+		// saw
+		for (int i = 0; i < 3; i++) {
+			saws.add(sceneLoader.sceneActor.getImageById("saw" + (i + 1)));
+		}
+
+		game.backTexture = new Texture(Gdx.files.internal("back/back3.png"));
+
+		Data.LEVEL = 3;
+		Data.COINS_COLLECTED = 0;
+		//Data.saveData();
+		Life.health = 100;
+	}
+
+	@Override
+	public void act(float delta) {
+		float playerX, playerY;
+		float objectX, objectY, objectWidth, objectHeight;
+
+		playerX = itemPlayer.getX();
+		playerY = itemPlayer.getY();
+
+		imageSaw1.setRotation(imageSaw1.getRotation() + 200 * delta);
+		imageSaw2.setRotation(imageSaw2.getRotation() + 200 * delta);
+		imageSaw3.setRotation(imageSaw2.getRotation() + 200 * delta);
+
+		// coins
+		Iterator<SpriteAnimation> iteratorCoin = coins.iterator();
+		while (iteratorCoin.hasNext()) {
+			SpriteAnimation coin = iteratorCoin.next();
+
+			objectX = coin.getX() - 35;
+			objectY = coin.getY() - 20;
+			objectWidth = coin.getWidth();
+			objectHeight = coin.getHeight();
+
+			if (PlayerCollisionHandler.isOverlaps(playerX, playerY, objectX,
+					objectY, objectWidth, objectHeight)) {
+				Data.COINS_COLLECTED++;
+				GameSoundEffects.coinSound.play();
+				Data.SCORE += Data.COINS_COLLECTED * 5;
+				System.out.println("coin x:" + coin.getX() + " score:"
+						+ Data.SCORE);
+				coin.remove();// remove from stage
+				iteratorCoin.remove();// remove from list
+			}
+		}
+
+		// enemies
+		Iterator<CompositeItem> iteratorEnemy = enemies.iterator();
+		while (iteratorEnemy.hasNext()) {
+			CompositeItem itemEnemy = iteratorEnemy.next();
+
+			objectX = itemEnemy.getX() - 40;
+			objectY = itemEnemy.getY() - 20;
+			objectWidth = itemEnemy.getWidth();
+			objectHeight = itemEnemy.getHeight();
+
+			if (PlayerCollisionHandler.isOverlaps(playerX, playerY, objectX,
+					objectY, objectWidth, objectHeight)) {
+				if (!GameSoundEffects.screamSound.isPlaying()) {
+					GameSoundEffects.screamSound.play();
+				}
+				// sceneLoader.setAmbienceInfo(ambienceColorInfo.setRedAmbience());
+				Life.health -= 1;
+			}
+		}
+
+		// saw
+		Iterator<ImageItem> iteratorSaw = saws.iterator();
+		while (iteratorSaw.hasNext()) {
+			ImageItem itemSaw = iteratorSaw.next();
+
+			objectX = itemSaw.getX() - 60;
+			objectY = itemSaw.getY() - 20;
+			objectWidth = itemSaw.getWidth();
+			objectHeight = itemSaw.getHeight();
+
+			if (PlayerCollisionHandler.isOverlaps(playerX, playerY, objectX,
+					objectY, objectWidth, objectHeight)) {
+				// sceneLoader.setAmbienceInfo(ambienceColorInfo.setRedAmbience());
+				GameSoundEffects.deadSound.play();
+				Life.dead = true;
+			}
+		}
+
+		objectX = itemBigSpike.getX() + 20;
+		objectY = itemBigSpike.getY() + 10;
+		objectWidth = itemBigSpike.getWidth();
+		objectHeight = itemBigSpike.getHeight();
+
+		if (PlayerCollisionHandler.isOverlaps(playerX, playerY, objectX,
+				objectY, objectWidth, objectHeight)) {
+			if (!GameSoundEffects.screamSound.isPlaying()) {
+				GameSoundEffects.screamSound.play();
+			}
+			// sceneLoader.setAmbienceInfo(ambienceColorInfo.setRedAmbience());
+			Life.health -= 1.5;
+		}
+
+		super.act(delta);
+	}
+
+	@Override
+	public void render(float delta) {
+		if (!Life.dead) {
+
+			float xPos = itemPlayer.getX();
+			float yPos = itemPlayer.getY();
+
+			if (xPos <= game.homeXPosition && yPos >= game.homeYPosition) {
+				if (Data.COINS_COLLECTED > 29) {
+					GameSoundEffects.homeSound.play();
+					Data.LEVEL = 4;
+					game.levelLoader.loadLevel(game, Data.LEVEL);
+				}
+			}
+
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			game.drawBackTexture(0, 0, 960, 540);
+			act(delta);
+			draw();
+			playerDataRenderer.renderPlayerData();
+
+		} else {
+			game.setScreen(game.gameOver);
+		}
+	}
+
+	@Override
+	public void resize(int width, int height) {
+
+	}
+
+	@Override
+	public void pause() {
+
+	}
+
+	@Override
+	public void resume() {
+
+	}
+
+	@Override
+	public void hide() {
+
+	}
+
+	@Override
+	public void dispose() {
+		System.out.println("At LevelThree.dispose()");
+		super.dispose();
+	}
+
+}

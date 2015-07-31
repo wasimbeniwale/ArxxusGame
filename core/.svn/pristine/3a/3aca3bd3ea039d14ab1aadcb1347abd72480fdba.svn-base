@@ -1,0 +1,129 @@
+package com.wasim.arxxusgame;
+
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.wasim.arxxusgame.global.Data;
+import com.wasim.arxxusgame.global.GameSoundEffects;
+import com.wasim.arxxusgame.levels.GameOver;
+import com.wasim.arxxusgame.levels.GameWin;
+import com.wasim.arxxusgame.levels.HelpScreen;
+import com.wasim.arxxusgame.levels.LevelFour;
+import com.wasim.arxxusgame.levels.LevelLoader;
+import com.wasim.arxxusgame.levels.LevelOne;
+import com.wasim.arxxusgame.levels.LevelThree;
+import com.wasim.arxxusgame.levels.LevelTwo;
+import com.wasim.arxxusgame.levels.MainStage;
+import com.wasim.arxxusgame.levels.MilestoneStage;
+import com.wasim.arxxusgame.levels.ScoreScreen;
+import com.wasim.arxxusgame.levels.SettingsScreen;
+import com.wasim.arxxusgame.levels.SplashScreen;
+
+public class ArxxusGame extends Game {
+
+	public MainStage mainStage;
+
+	// levels
+	private SplashScreen splashScreen;
+	public LevelOne levelOne;
+	public LevelTwo levelTwo;
+	public LevelThree levelThree;
+	public LevelFour levelFour;
+	public GameOver gameOver;
+	public GameWin gameWin;
+	public SettingsScreen settingsScreen;
+	public ScoreScreen scoreScreen;
+	public HelpScreen helpScreen;
+
+	// levelLoader
+	public LevelLoader levelLoader;
+
+	// Milestone
+	public MilestoneStage milestoneStage;
+
+	// SpriteBatches and Textures for background
+	public SpriteBatch spriteBatch;
+	public Texture backTexture;
+	public BitmapFont scoreFont;
+	public ShapeRenderer healthBar;
+
+	// end of level
+	public float homeXPosition = 0;
+	public float homeYPosition = 0;
+
+	@Override
+	public void create() {
+
+		// load saved level from disk to Data.level
+		Data.loadData();
+
+		// load assets
+		spriteBatch = new SpriteBatch();
+		scoreFont = new BitmapFont();
+		scoreFont.setColor(Color.WHITE);
+		healthBar = new ShapeRenderer();
+
+		// level construction
+		splashScreen = new SplashScreen(this);
+		mainStage = new MainStage(this);
+		levelOne = new LevelOne(this);
+		levelTwo = new LevelTwo(this);
+		levelThree = new LevelThree(this);
+		levelFour = new LevelFour(this);
+		gameOver = new GameOver(this);
+		gameWin = new GameWin(this);
+		settingsScreen = new SettingsScreen(this);
+		scoreScreen = new ScoreScreen(this);
+		helpScreen = new HelpScreen(this);
+
+		levelLoader = new LevelLoader();
+
+		GameSoundEffects.loadMusic();
+		GameSoundEffects.backMusic.play();
+
+		setScreen(splashScreen);
+	}
+
+	public void drawBackTexture(float x, float y, float width, float height) {
+		spriteBatch.begin();
+		spriteBatch.draw(backTexture, x, y, width, height);
+		spriteBatch.end();
+	}
+
+	@Override
+	public void dispose() {
+		Data.saveData();
+		System.out.println("Data Saved");
+
+		if (Data.isMainStageLoaded) {
+			backTexture.dispose();
+			healthBar.dispose();
+			scoreFont.dispose();
+			spriteBatch.dispose();
+			System.out.println("Disposed batches and textures");
+
+			System.out.println("Now disposing all levels");
+			splashScreen.dispose();
+			mainStage.dispose();
+			levelOne.dispose();
+			levelTwo.dispose();
+			levelThree.dispose();
+			levelFour.dispose();
+			gameOver.dispose();
+			gameWin.dispose();
+			settingsScreen.dispose();
+			scoreScreen.dispose();
+			helpScreen.dispose();
+
+		}
+
+		GameSoundEffects.disposeAllMusic();
+		System.out.println("Disposed music assets");
+
+		System.out.println("At the end of ArxxusGame.dispose()");
+		super.dispose();
+	}
+}

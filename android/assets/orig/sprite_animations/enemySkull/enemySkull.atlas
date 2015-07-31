@@ -1,0 +1,20 @@
+
+enemySkull.png
+size: 128,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+enemySkull0001
+  rotate: false
+  xy: 2, 2
+  size: 50, 54
+  orig: 50, 54
+  offset: 0, 0
+  index: -1
+enemySkull0002
+  rotate: false
+  xy: 2, 58
+  size: 50, 54
+  orig: 50, 54
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,20 @@
+
+enemyRed.png
+size: 128,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+enemyRed0001
+  rotate: false
+  xy: 2, 2
+  size: 50, 55
+  orig: 50, 55
+  offset: 0, 0
+  index: -1
+enemyRed0002
+  rotate: false
+  xy: 2, 59
+  size: 50, 55
+  orig: 50, 55
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,27 @@
+
+creepy.png
+size: 256,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+creepy0001
+  rotate: false
+  xy: 2, 121
+  size: 98, 117
+  orig: 98, 117
+  offset: 0, 0
+  index: -1
+creepy0002
+  rotate: false
+  xy: 102, 121
+  size: 98, 117
+  orig: 98, 117
+  offset: 0, 0
+  index: -1
+creepy0003
+  rotate: false
+  xy: 2, 2
+  size: 98, 117
+  orig: 98, 117
+  offset: 0, 0
+  index: -1

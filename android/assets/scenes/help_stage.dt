@@ -1,0 +1,1 @@
+{"sceneName":"help_stage","composite":{"sImages":[{"x":64.00006,"y":112.49997,"scaleX":0.97199994,"scaleY":0.71071434,"layerName":"Default","tint":[0.8117647,0,1,1],"imageName":"help"},{"itemIdentifier":"btn_continue","x":394.5,"y":38,"zIndex":1,"layerName":"Default","tint":[1,1,1,1],"imageName":"btncontinue"}],"layers":[{"layerName":"Default"}]},"physicsPropertiesVO":{}}
