@@ -1,6 +1,6 @@
 # ArxxusGame
 
-![image](https://drive.google.com/file/d/0B7gK5isiAT3sREJNTEVFcmxyZWM/view?usp=sharing)
+![image](https://raw.githubusercontent.com/wasimbeniwale/screenshots/master/1%20(2).png)
 
 A simple Cross platform side scrolling game (much like Mario) made with LibGdx, Box2D and Overlap2D.
 
